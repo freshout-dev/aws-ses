@@ -1,30 +1,30 @@
 module AWS #:nodoc:
   # AWS::SES is a Ruby library for Amazon's Simple Email Service's REST API (http://aws.amazon.com/ses).
-  # 
+  #
   # == Getting started
-  # 
+  #
   # To get started you need to require 'aws/ses':
-  # 
+  #
   #   % irb -rubygems
   #   irb(main):001:0> require 'aws/ses'
   #   # => true
-  # 
+  #
   # Before you can do anything, you must establish a connection using Base.new.  A basic connection would look something like this:
-  # 
+  #
   #   ses = AWS::SES::Base.new(
-  #     :access_key_id     => 'abc', 
+  #     :access_key_id     => 'abc',
   #     :secret_access_key => '123'
   #   )
-  # 
+  #
   # The minimum connection options that you must specify are your access key id and your secret access key.
   #
   # === Connecting to a server from another region
-  # 
+  #
   # The default server API endpoint is "email.us-east-1.amazonaws.com", corresponding to the US East 1 region.
   # To connect to a different one, just pass it as a parameter to the AWS::SES::Base initializer:
   #
   #   ses = AWS::SES::Base.new(
-  #     :access_key_id     => 'abc', 
+  #     :access_key_id     => 'abc',
   #     :secret_access_key => '123',
   #     :server => 'email.eu-west-1.amazonaws.com',
   #     :message_id_domain => 'eu-west-1.amazonses.com'
@@ -32,7 +32,7 @@ module AWS #:nodoc:
   #
 
   module SES
-    
+
     API_VERSION = '2010-12-01'
 
     DEFAULT_REGION = 'us-east-1'
@@ -42,9 +42,9 @@ module AWS #:nodoc:
     DEFAULT_HOST = 'email.us-east-1.amazonaws.com'
 
     DEFAULT_MESSAGE_ID_DOMAIN = 'email.amazonses.com'
-    
+
     USER_AGENT = 'github-aws-ses-ruby-gem'
-    
+
     # Encodes the given string with the secret_access_key by taking the
     # hmac-sha1 sum, and then base64 encoding it.  Optionally, it will also
     # url encode the result of that to protect the string if it's going to
@@ -66,9 +66,9 @@ module AWS #:nodoc:
         return b64_hmac
       end
     end
-    
+
     # Generates the HTTP Header String that Amazon looks for
-    # 
+    #
     # @param [String] key the AWS Access Key ID
     # @param [String] alg the algorithm used for the signature
     # @param [String] sig the signature itself
@@ -81,10 +81,10 @@ module AWS #:nodoc:
     end
 
     # AWS::SES::Base is the abstract super class of all classes who make requests against SES
-    class Base   
+    class Base
       include SendEmail
       include Info
-      
+
       attr_reader :use_ssl, :server, :proxy_server, :port, :message_id_domain, :signature_version, :region
       attr_accessor :settings
 
@@ -150,18 +150,18 @@ module AWS #:nodoc:
 
         @http.use_ssl = @use_ssl
       end
-      
+
       def connection
         @http
       end
-      
-      # Make the connection to AWS passing in our request.  
+
+      # Make the connection to AWS passing in our request.
       # allow us to have a one line call in each method which will do all of the work
       # in making the actual request to AWS.
       def request(action, params = {})
         # Use a copy so that we don't modify the caller's Hash, remove any keys that have nil or empty values
         params = params.reject { |key, value| value.nil? or value.empty?}
-        
+
         timestamp = Time.now.getutc
 
         params.merge!( {"Action" => action,
@@ -216,7 +216,7 @@ module AWS #:nodoc:
       end
 
       def string_to_sign(for_action)
-        "AWS4-HMAC-SHA256\n" +  amzdate + "\n" +  credential_scope + "\n" + Digest::SHA256.hexdigest(canonical_request(for_action).encode('utf-8').b)
+        "AWS4-HMAC-SHA256\n" +  amzdate + "\n" +  credential_scope + "\n" + Digest::SHA256.hexdigest(canonical_request(for_action))
       end
 
 
@@ -241,17 +241,17 @@ module AWS #:nodoc:
       end
 
       def payload_hash
-        Digest::SHA256.hexdigest(''.encode('utf-8'))
+        Digest::SHA256.hexdigest('')
       end
 
       def sig_v4_auth_signature(for_action)
         signing_key = getSignatureKey(@secret_access_key, datestamp, region, SERVICE)
 
-        OpenSSL::HMAC.hexdigest("SHA256", signing_key, string_to_sign(for_action).encode('utf-8'))
+        OpenSSL::HMAC.hexdigest("SHA256", signing_key, string_to_sign(for_action))
       end
 
       def getSignatureKey(key, dateStamp, regionName, serviceName)
-        kDate = sign(('AWS4' + key).encode('utf-8'), dateStamp)
+        kDate = sign(('AWS4' + key), dateStamp)
         kRegion = sign(kDate, regionName)
         kService = sign(kRegion, serviceName)
         kSigning = sign(kService, 'aws4_request')
@@ -260,7 +260,7 @@ module AWS #:nodoc:
       end
 
       def sign(key, msg)
-        OpenSSL::HMAC.digest("SHA256", key, msg.encode('utf-8'))
+        OpenSSL::HMAC.digest("SHA256", key, msg)
       end
     end # class Base
   end # Module SES
