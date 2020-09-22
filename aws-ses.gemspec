@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "aws-ses"
-  s.version = "0.7.1"
+  s.version = "0.7.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Drew Blas", "Marcel Molina Jr."]
-  s.date = "2020-09-19"
+  s.date = "2020-09-22"
   s.description = "Client library for Amazon's Simple Email Service's REST API"
   s.email = "drew.blas@gmail.com"
   s.extra_rdoc_files = [
