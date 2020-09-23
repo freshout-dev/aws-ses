@@ -16,6 +16,6 @@ group :development do
 end
 
 gem 'builder'
-gem 'mail', '> 2.2.5'
+gem 'mail', '2.6.3'
 gem 'mime-types', '1.19'
 gem 'xml-simple'

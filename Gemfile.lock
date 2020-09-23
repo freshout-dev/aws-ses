@@ -2,7 +2,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     addressable (2.3.8)
-    builder (3.2.2)
+    builder (3.2.4)
     faraday (0.8.11)
       multipart-post (~> 1.2.0)
     flexmock (0.8.11)
@@ -30,10 +30,9 @@ GEM
       semver
     json (1.8.6)
     jwt (1.5.6)
-    mail (2.7.1)
-      mini_mime (>= 0.1.1)
+    mail (2.6.3)
+      mime-types (>= 1.16, < 3)
     mime-types (1.19)
-    mini_mime (1.0.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (1.2.0)
@@ -63,7 +62,7 @@ DEPENDENCIES
   bundler (>= 1.17)
   flexmock (~> 0.8.11)
   jeweler
-  mail (> 2.2.5)
+  mail (= 2.6.3)
   mime-types (= 1.19)
   rake
   shoulda-context (= 1.1.5)
