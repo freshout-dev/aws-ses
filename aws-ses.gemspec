@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "aws-ses"
-  s.version = "0.7.2"
+  s.version = "0.7.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Drew Blas", "Marcel Molina Jr."]
-  s.date = "2020-09-22"
+  s.date = "2020-09-23"
   s.description = "Client library for Amazon's Simple Email Service's REST API"
   s.email = "drew.blas@gmail.com"
   s.extra_rdoc_files = [
@@ -60,7 +60,7 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<builder>, [">= 0"])
-      s.add_runtime_dependency(%q<mail>, ["> 2.2.5"])
+      s.add_runtime_dependency(%q<mail>, ["= 2.6.3"])
       s.add_runtime_dependency(%q<mime-types>, ["= 1.19"])
       s.add_runtime_dependency(%q<xml-simple>, [">= 0"])
       s.add_development_dependency(%q<bundler>, [">= 1.17"])
@@ -72,7 +72,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<timecop>, [">= 0"])
     else
       s.add_dependency(%q<builder>, [">= 0"])
-      s.add_dependency(%q<mail>, ["> 2.2.5"])
+      s.add_dependency(%q<mail>, ["= 2.6.3"])
       s.add_dependency(%q<mime-types>, ["= 1.19"])
       s.add_dependency(%q<xml-simple>, [">= 0"])
       s.add_dependency(%q<bundler>, [">= 1.17"])
@@ -85,7 +85,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<builder>, [">= 0"])
-    s.add_dependency(%q<mail>, ["> 2.2.5"])
+    s.add_dependency(%q<mail>, ["= 2.6.3"])
     s.add_dependency(%q<mime-types>, ["= 1.19"])
     s.add_dependency(%q<xml-simple>, [">= 0"])
     s.add_dependency(%q<bundler>, [">= 1.17"])
