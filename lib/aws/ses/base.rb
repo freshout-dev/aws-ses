@@ -167,7 +167,7 @@ module AWS #:nodoc:
         subset_params = {
           'Action' => action,
           'Version' => API_VERSION,
-          'RawMessage.Data' => params['RawMessage.Data'].gsub("\n",''),
+          'RawMessage.Data' => (params['RawMessage.Data'] || '').gsub("\n",''),
         }
 
         payload = subset_params.collect do |param|
@@ -194,9 +194,9 @@ module AWS #:nodoc:
       end
 
       # Set the Authorization header using AWS signed header authentication
-      def get_aws_auth_param(timestamp, secret_access_key, action = '', signature_version = 2, payload)
+      def get_aws_auth_param(timestamp, secret_access_key, action = '', signature_version = 2, payload = '')
         raise(ArgumentError, "signature_version must be `2` or `4`") unless signature_version == 2 || signature_version == 4
-        encoded_canonical = SES.encode(secret_access_key, timestamp.iso8601, false)
+        encoded_canonical = SES.encode(secret_access_key, timestamp.strftime('%Y-%m-%dT%H:%M:%S.%L%Z'), false)
 
         if signature_version == 4
           SES.authorization_header_v4(sig_v4_auth_credential(timestamp), sig_v4_auth_signed_headers, sig_v4_auth_signature(action, timestamp, payload))
@@ -220,7 +220,7 @@ module AWS #:nodoc:
       end
 
       def string_to_sign(for_action, time, payload)
-        "AWS4-HMAC-SHA256\n" +  amzdate(time) + "\n" +  credential_scope(time) + "\n" + Digest::SHA256.hexdigest(canonical_request(for_action, time, payload).encode('utf-8').b)
+        "AWS4-HMAC-SHA256\n" +  amzdate(time) + "\n" +  credential_scope(time) + "\n" + Digest::SHA256.hexdigest(canonical_request(for_action, time, payload))
       end
 
       def amzdate(time)
@@ -244,17 +244,17 @@ module AWS #:nodoc:
       end
 
       def payload_hash(payload)
-        Digest::SHA256.hexdigest(payload.encode('utf-8'))
+        Digest::SHA256.hexdigest(payload)
       end
 
       def sig_v4_auth_signature(for_action, time, payload)
         signing_key = getSignatureKey(@secret_access_key, datestamp(time), region, SERVICE)
 
-        OpenSSL::HMAC.hexdigest("SHA256", signing_key, string_to_sign(for_action, time, payload).encode('utf-8'))
+        OpenSSL::HMAC.hexdigest("SHA256", signing_key, string_to_sign(for_action, time, payload))
       end
 
       def getSignatureKey(key, dateStamp, regionName, serviceName)
-        kDate = sign(('AWS4' + key).encode('utf-8'), dateStamp)
+        kDate = sign(('AWS4' + key), dateStamp)
         kRegion = sign(kDate, regionName)
         kService = sign(kRegion, serviceName)
         kSigning = sign(kService, 'aws4_request')
@@ -263,7 +263,7 @@ module AWS #:nodoc:
       end
 
       def sign(key, msg)
-        OpenSSL::HMAC.digest("SHA256", key, msg.encode('utf-8'))
+        OpenSSL::HMAC.digest("SHA256", key, msg)
       end
     end # class Base
   end # Module SES
